@@ -30,5 +30,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Local Docker Host') {
+            steps {
+                sh '''
+                    docker rm -f my-web-app || true
+                    docker run -d --name my-web-app -p 8081:80 oliquavious/my-web-app:latest
+                '''
+            }
+        }
     }
 }
