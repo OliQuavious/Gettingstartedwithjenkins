@@ -39,5 +39,17 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy to Remote Docker Host') {
+            steps {
+                sshagent(['remote-host-ssh-key']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no user@remote-host "docker pull oliquavious/my-web-app:latest"
+                        ssh -o StrictHostKeyChecking=no user@remote-host "docker rm -f my-web-app || true"
+                        ssh -o StrictHostKeyChecking=no user@remote-host "docker run -d --name my-web-app -p 8080:80 oliquavious/my-web-app:latest"
+                    '''
+                }
+            }
+        }
     }
 }
